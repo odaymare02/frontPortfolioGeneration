@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+.input {
+  @apply w-full text-center rounded-lg bg-slate-900/70 px-4 py-2
+  text-white border border-white/10
+  focus:outline-none focus:ring-2 focus:ring-indigo-400;
+}
+.section {
+  @apply bg-slate-900/70 border border-white/10 rounded-2xl p-6 space-y-6;
+}
+.title {
+  @apply text-xl font-semibold text-white;
+}
+
+.add-btn {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 flex items-center gap-2;
+}
+.del-btn {
+  @apply flex items-center gap-2 text-red-400 hover:text-red-500;
+}
+
+.card {
+  @apply bg-slate-800/60 border border-white/10 rounded-xl p-4 space-y-3;
+}
