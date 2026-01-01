@@ -41,7 +41,7 @@ export default function Dashboard() {
   };
 
   const handleGetPublicLink = () => {
-    const publicLink = `${window.location.origin}/portfolio/${localStorage.getItem("pun")}`;
+    const publicLink = `${window.location.origin}/portfolios/${localStorage.getItem("pun")}`;
     navigator.clipboard.writeText(publicLink);
     alert("Public link copied to clipboard!");
   };
