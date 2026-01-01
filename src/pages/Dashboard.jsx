@@ -19,7 +19,7 @@ const TABS = [
   { name: "Certificates", component: Certificates },
   { name: "Links", component: Links },
   { name: "Themes", component: ThemeSelector },
-  // Preview will be handled differently
+  // Preview handled separately
 ];
 
 export default function Dashboard() {
@@ -34,10 +34,22 @@ export default function Dashboard() {
 
   const ActiveComponent = TABS.find((tab) => tab.name === activeTab)?.component;
 
+  const handleLogout = () => {
+    localStorage.removeItem("pun");
+    localStorage.removeItem("ptoken");
+    navigate("/login");
+  };
+
+  const handleGetPublicLink = () => {
+    const publicLink = `${window.location.origin}/portfolio/${localStorage.getItem("pun")}`;
+    navigator.clipboard.writeText(publicLink);
+    alert("Public link copied to clipboard!");
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 p-6">
-      {/* Tabs */}
-      <div className="flex gap-4 mb-6 overflow-x-auto">
+      {/* Tabs + action buttons */}
+      <div className="flex flex-wrap gap-4 mb-6 items-center">
         {TABS.map((tab) => (
           <button
             key={tab.name}
@@ -58,6 +70,22 @@ export default function Dashboard() {
           className="px-4 py-2 rounded-lg font-medium bg-green-500 text-white hover:bg-green-600 transition"
         >
           Preview
+        </button>
+
+        {/* Get Public Link */}
+        <button
+          onClick={handleGetPublicLink}
+          className="px-4 py-2 rounded-lg font-medium bg-blue-500 text-white hover:bg-blue-600 transition"
+        >
+          Get Public Link
+        </button>
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 rounded-lg font-medium bg-red-500 text-white hover:bg-red-600 transition"
+        >
+          Logout
         </button>
       </div>
 
