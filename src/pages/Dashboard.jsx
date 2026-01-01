@@ -37,7 +37,7 @@ export default function Dashboard() {
   const handleLogout = () => {
     localStorage.removeItem("pun");
     localStorage.removeItem("ptoken");
-    navigate("/login");
+    navigate("/");
   };
 
   const handleGetPublicLink = () => {
