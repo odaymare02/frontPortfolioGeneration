@@ -5,29 +5,48 @@ import usePortfolio from "../hooks/usePortfolio";
 const themes = {
   classic: {
     container: "bg-slate-900 text-white",
-    card: "bg-slate-800/70 border border-white/20",
-    input: "bg-slate-800/70 text-white border border-white/20 focus:ring-2 focus:ring-indigo-400",
-    button: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 flex items-center gap-2",
-    skill: "bg-indigo-500/10 text-indigo-300 border border-indigo-500/20",
-    dangerButton: "text-red-400 hover:text-red-500",
+    card: "bg-slate-800/80 border border-white/10 rounded-xl shadow-lg",
+    input:
+      "w-full bg-slate-800/70 text-white border border-white/20 rounded-lg px-4 py-2 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition",
+    button:
+      "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-5 py-2 font-medium flex items-center gap-2 transition",
+    skill:
+      "bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-full px-3 py-1 text-sm",
+    dangerButton:
+      "text-red-400 hover:text-red-500 transition",
   },
+
   dark: {
     container: "bg-gray-900 text-gray-100",
-    card: "bg-gray-800/70 border border-gray-600/40",
-    input: "bg-gray-800/70 text-gray-100 border border-gray-600/40 focus:ring-2 focus:ring-green-400",
-    button: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 flex items-center gap-2",
-    skill: "bg-green-500/10 text-green-300 border border-green-500/20",
-    dangerButton: "text-red-500 hover:text-red-600",
+    card: "bg-gray-800/80 border border-gray-700 rounded-xl shadow-lg",
+    input:
+      "w-full bg-gray-800/70 text-gray-100 border border-gray-600 rounded-lg px-4 py-2 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition",
+    button:
+      "bg-green-600 hover:bg-green-700 text-white rounded-lg px-5 py-2 font-medium flex items-center gap-2 transition",
+    skill:
+      "bg-green-500/10 text-green-300 border border-green-500/20 rounded-full px-3 py-1 text-sm",
+    dangerButton:
+      "text-red-500 hover:text-red-600 transition",
   },
+
   modern: {
-    container: "bg-white text-gray-900",
-    card: "bg-gray-100 border border-gray-300",
-    input: "bg-white text-gray-900 border border-gray-300 focus:ring-2 focus:ring-indigo-500",
-    button: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 flex items-center gap-2",
-    skill: "bg-indigo-100 text-indigo-600 border border-indigo-300",
-    dangerButton: "text-red-500 hover:text-red-600",
+    container: "bg-gray-50 text-gray-900",
+    card: "bg-white border border-gray-200 rounded-xl shadow-md",
+    input:
+      "w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition",
+    button:
+      "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-5 py-2 font-medium flex items-center gap-2 transition",
+    skill:
+      "bg-indigo-100 text-indigo-700 border border-indigo-300 rounded-full px-3 py-1 text-sm",
+    dangerButton:
+      "text-red-500 hover:text-red-600 transition",
   },
 };
+
+
+const inputBase =
+  "w-full px-4 py-2 rounded-lg bg-slate-900/40 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500";
+
 export default function PortfolioPreview() {
   const {
     portfolio,
@@ -37,9 +56,7 @@ export default function PortfolioPreview() {
     uploadProfileImage,
     uploadCertificateImage,
     loading,
-  } = usePortfolio({
-    Uname: localStorage.getItem("pun"),
-  });
+  } = usePortfolio({ Uname: localStorage.getItem("pun") });
 
   const fileRefProfile = useRef(null);
   const fileRefCert = useRef(null);
@@ -49,25 +66,23 @@ export default function PortfolioPreview() {
     fetchPortfolio();
   }, []);
 
-  if (!portfolio) return <div>Loading...</div>;
+  if (!portfolio) return <div className="p-6">Loading...</div>;
 
   const theme = themes[portfolio.theme] || themes.classic;
 
-  // ================= SAVE =================
+  /* ================= SAVE ================= */
   const handleSaveAll = async () => {
     try {
       await updatePortfolio(portfolio);
-      alert("Portfolio saved successfully ✅");
+      alert("Saved successfully ✅");
     } catch {
       alert("Save failed ❌");
     }
   };
 
-  // ================= BASIC =================
-  const updateField = (key, value) =>
-    setPortfolio({ ...portfolio, [key]: value });
+  const updateField = (k, v) => setPortfolio({ ...portfolio, [k]: v });
 
-  // ================= PROFILE IMAGE =================
+  /* ================= PROFILE IMAGE ================= */
   const handleProfileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -75,54 +90,50 @@ export default function PortfolioPreview() {
     setPortfolio(res);
   };
 
-  // ================= SKILLS =================
-  const addSkill = (skill) => {
-    if (!skill || portfolio.skills.includes(skill)) return;
-    setPortfolio({ ...portfolio, skills: [...portfolio.skills, skill] });
+  const addSkill = (s) => {
+    if (!s || portfolio.skills.includes(s)) return;
+    setPortfolio({ ...portfolio, skills: [...portfolio.skills, s] });
   };
-
-  const removeSkill = (skill) =>
+  const removeSkill = (s) =>
     setPortfolio({
       ...portfolio,
-      skills: portfolio.skills.filter((s) => s !== skill),
+      skills: portfolio.skills.filter((x) => x !== s),
     });
 
-  // ================= PROJECTS =================
   const addProject = () =>
     setPortfolio({
       ...portfolio,
-      projects: [...(portfolio.projects || []), { name: "", description: "", link: "", image: "" }],
+      projects: [...(portfolio.projects || []), { name: "", description: "", link: "" }],
     });
 
-  const updateProject = (i, key, value) => {
-    const updated = [...portfolio.projects];
-    updated[i][key] = value;
-    setPortfolio({ ...portfolio, projects: updated });
+  const updateProject = (i, k, v) => {
+    const p = [...portfolio.projects];
+    p[i][k] = v;
+    setPortfolio({ ...portfolio, projects: p });
   };
 
   const removeProject = (i) => {
-    const updated = [...portfolio.projects];
-    updated.splice(i, 1);
-    setPortfolio({ ...portfolio, projects: updated });
+    const p = [...portfolio.projects];
+    p.splice(i, 1);
+    setPortfolio({ ...portfolio, projects: p });
   };
 
-  // ================= CERTIFICATES =================
   const addCertificate = () =>
     setPortfolio({
       ...portfolio,
-      certificates: [...(portfolio.certificates || []), { name: "", issuer: "", link: "", image: "" }],
+      certificates: [...(portfolio.certificates || []), { name: "", issuer: "", link: "" }],
     });
 
-  const updateCertificate = (i, key, value) => {
-    const updated = [...portfolio.certificates];
-    updated[i][key] = value;
-    setPortfolio({ ...portfolio, certificates: updated });
+  const updateCertificate = (i, k, v) => {
+    const c = [...portfolio.certificates];
+    c[i][k] = v;
+    setPortfolio({ ...portfolio, certificates: c });
   };
 
   const removeCertificate = (i) => {
-    const updated = [...portfolio.certificates];
-    updated.splice(i, 1);
-    setPortfolio({ ...portfolio, certificates: updated });
+    const c = [...portfolio.certificates];
+    c.splice(i, 1);
+    setPortfolio({ ...portfolio, certificates: c });
   };
 
   const handleCertImageClick = (i) => {
@@ -134,87 +145,106 @@ export default function PortfolioPreview() {
     const file = e.target.files[0];
     if (!file) return;
     const i = activeCertIndex.current;
-    const res = await uploadCertificateImage(portfolio.certificates[i]._id, file);
+    const res = await uploadCertificateImage(
+      portfolio.certificates[i]._id,
+      file
+    );
     setPortfolio(res);
   };
 
-  // ================= EXPERIENCE =================
   const addExperience = () =>
     setPortfolio({
       ...portfolio,
-      experience: [...(portfolio.experience || []), { role: "", company: "", startDate: "", endDate: "", description: "" }],
+      experience: [...(portfolio.experience || []), {}],
     });
 
-  const updateExperience = (i, key, value) => {
-    const updated = [...portfolio.experience];
-    updated[i][key] = value;
-    setPortfolio({ ...portfolio, experience: updated });
+  const updateExperience = (i, k, v) => {
+    const e = [...portfolio.experience];
+    e[i][k] = v;
+    setPortfolio({ ...portfolio, experience: e });
   };
 
   const removeExperience = (i) => {
-    const updated = [...portfolio.experience];
-    updated.splice(i, 1);
-    setPortfolio({ ...portfolio, experience: updated });
+    const e = [...portfolio.experience];
+    e.splice(i, 1);
+    setPortfolio({ ...portfolio, experience: e });
   };
 
-  // ================= LINKS =================
-  const updateLinks = (key, value) =>
+  const addEducation = () =>
     setPortfolio({
       ...portfolio,
-      links: { ...portfolio.links, [key]: value },
+      education: [...(portfolio.education || []), {}],
+    });
+
+  const updateEducation = (i, k, v) => {
+    const e = [...portfolio.education];
+    e[i][k] = v;
+    setPortfolio({ ...portfolio, education: e });
+  };
+
+  const removeEducation = (i) => {
+    const e = [...portfolio.education];
+    e.splice(i, 1);
+    setPortfolio({ ...portfolio, education: e });
+  };
+
+  const updateLinks = (k, v) =>
+    setPortfolio({
+      ...portfolio,
+      links: { ...portfolio.links, [k]: v },
     });
 
   return (
-    <div className={`container mx-auto p-6 space-y-6 ${theme.container}`}>
+    <div className={`container mx-auto p-6 space-y-8 ${theme.container}`}>
 
       {/* PROFILE */}
       <div className="flex gap-4 items-center">
         <div
-          onClick={() => fileRefProfile.current.click()}
           className="w-24 h-24 rounded-full overflow-hidden cursor-pointer border"
+          onClick={() => fileRefProfile.current.click()}
         >
           {portfolio.profileImage ? (
             <img src={portfolio.profileImage} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-600">Upload</div>
+            <div className="w-full h-full flex items-center justify-center bg-gray-600">
+              Upload
+            </div>
           )}
         </div>
         <input ref={fileRefProfile} type="file" hidden onChange={handleProfileUpload} />
 
-        <div className="flex flex-col gap-2">
-          <input value={portfolio.name} onChange={(e) => updateField("name", e.target.value)} className={theme.input} placeholder="Name" />
-          <input value={portfolio.title} onChange={(e) => updateField("title", e.target.value)} className={theme.input} placeholder="Title" />
+        <div className="flex flex-col gap-2 w-full max-w-md">
+          <input className={inputBase} value={portfolio.name} onChange={(e) => updateField("name", e.target.value)} placeholder="Name" />
+          <input className={inputBase} value={portfolio.title} onChange={(e) => updateField("title", e.target.value)} placeholder="Title" />
         </div>
       </div>
 
       {/* ABOUT */}
-      <section className={`${theme.card} p-6 rounded-xl`}>
-        <h2 className="text-xl mb-2">About</h2>
-        <textarea value={portfolio.about || ""} onChange={(e) => updateField("about", e.target.value)} className={theme.input} />
-      </section>
+      <Section title="About" theme={theme}>
+        <textarea className={inputBase} value={portfolio.about || ""} onChange={(e) => updateField("about", e.target.value)} />
+      </Section>
 
       {/* SKILLS */}
-      <section className={`${theme.card} p-6 rounded-xl`}>
-        <h2 className="text-xl mb-2">Skills</h2>
-        <div className="flex gap-2 flex-wrap mb-2">
+      <Section title="Skills" theme={theme}>
+        <div className="flex gap-2 flex-wrap">
           {portfolio.skills.map((s, i) => (
-            <span key={i} className={`px-3 py-1 rounded-full flex items-center gap-1 ${theme.skill}`}>
+            <span key={i} className="px-3 py-1 rounded-full bg-indigo-500/20 flex gap-1 items-center">
               {s}
               <button onClick={() => removeSkill(s)}><Trash2 size={14} /></button>
             </span>
           ))}
         </div>
-        <AddSkillInput addSkill={addSkill} theme={theme} />
-      </section>
+        <AddSkillInput addSkill={addSkill} />
+      </Section>
 
       {/* PROJECTS */}
       <Section title="Projects" theme={theme}>
         {portfolio.projects?.map((p, i) => (
           <Card key={i} theme={theme}>
-            <input value={p.name} onChange={(e) => updateProject(i, "name", e.target.value)} className={theme.input} placeholder="Name" />
-            <textarea value={p.description} onChange={(e) => updateProject(i, "description", e.target.value)} className={theme.input} />
-            <input value={p.link} onChange={(e) => updateProject(i, "link", e.target.value)} className={theme.input} />
-            <button onClick={() => removeProject(i)} className={theme.dangerButton}>Remove</button>
+            <input className={inputBase} placeholder="Project name" value={p.name} onChange={(e) => updateProject(i, "name", e.target.value)} />
+            <textarea className={inputBase} placeholder="Description" value={p.description} onChange={(e) => updateProject(i, "description", e.target.value)} />
+            <input className={inputBase} placeholder="Link" value={p.link} onChange={(e) => updateProject(i, "link", e.target.value)} />
+            <button onClick={() => removeProject(i)} className={theme.danger}>Remove</button>
           </Card>
         ))}
         <button onClick={addProject} className={theme.button}><Plus size={16} /> Add Project</button>
@@ -224,23 +254,61 @@ export default function PortfolioPreview() {
       <Section title="Certificates" theme={theme}>
         {portfolio.certificates?.map((c, i) => (
           <Card key={i} theme={theme}>
-            <input value={c.name} onChange={(e) => updateCertificate(i, "name", e.target.value)} className={theme.input} />
-            <input value={c.issuer} onChange={(e) => updateCertificate(i, "issuer", e.target.value)} className={theme.input} />
-            <input value={c.link} onChange={(e) => updateCertificate(i, "link", e.target.value)} className={theme.input} />
+            <input className={inputBase} placeholder="Name" value={c.name} onChange={(e) => updateCertificate(i, "name", e.target.value)} />
+            <input className={inputBase} placeholder="Issuer" value={c.issuer} onChange={(e) => updateCertificate(i, "issuer", e.target.value)} />
+            <input className={inputBase} placeholder="Link" value={c.link} onChange={(e) => updateCertificate(i, "link", e.target.value)} />
             <button onClick={() => handleCertImageClick(i)} className={theme.button}><Image size={16} /> Image</button>
-            <button onClick={() => removeCertificate(i)} className={theme.dangerButton}>Remove</button>
+            <button onClick={() => removeCertificate(i)} className={theme.danger}>Remove</button>
           </Card>
         ))}
         <button onClick={addCertificate} className={theme.button}><Plus size={16} /> Add Certificate</button>
         <input ref={fileRefCert} type="file" hidden onChange={handleCertImageUpload} />
       </Section>
 
-      {/* SAVE BUTTON */}
+      {/* EXPERIENCE */}
+      <Section title="Experience" theme={theme}>
+        {portfolio.experience?.map((e, i) => (
+          <Card key={i} theme={theme}>
+            <input className={inputBase} placeholder="Role" value={e.role || ""} onChange={(ev) => updateExperience(i, "role", ev.target.value)} />
+            <input className={inputBase} placeholder="Company" value={e.company || ""} onChange={(ev) => updateExperience(i, "company", ev.target.value)} />
+            <textarea className={inputBase} placeholder="Description" value={e.description || ""} onChange={(ev) => updateExperience(i, "description", ev.target.value)} />
+            <button onClick={() => removeExperience(i)} className={theme.danger}>Remove</button>
+          </Card>
+        ))}
+        <button onClick={addExperience} className={theme.button}><Plus size={16} /> Add Experience</button>
+      </Section>
+
+      {/* EDUCATION */}
+      <Section title="Education" theme={theme}>
+        {portfolio.education?.map((e, i) => (
+          <Card key={i} theme={theme}>
+            <input className={inputBase} placeholder="Degree" value={e.degree || ""} onChange={(ev) => updateEducation(i, "degree", ev.target.value)} />
+            <input className={inputBase} placeholder="University" value={e.university || ""} onChange={(ev) => updateEducation(i, "university", ev.target.value)} />
+            <button onClick={() => removeEducation(i)} className={theme.danger}>Remove</button>
+          </Card>
+        ))}
+        <button onClick={addEducation} className={theme.button}><Plus size={16} /> Add Education</button>
+      </Section>
+
+      {/* LINKS */}
+      <Section title="Links" theme={theme}>
+        {["github", "linkedin", "website", "email"].map((k) => (
+          <input
+            key={k}
+            className={inputBase}
+            placeholder={k.toUpperCase()}
+            value={portfolio.links?.[k] || ""}
+            onChange={(e) => updateLinks(k, e.target.value)}
+          />
+        ))}
+      </Section>
+
+      {/* SAVE */}
       <div className="sticky bottom-4 flex justify-end">
         <button
           onClick={handleSaveAll}
           disabled={loading}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg"
+          className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-xl font-semibold shadow-lg"
         >
           {loading ? "Saving..." : "Save Changes"}
         </button>
@@ -250,11 +318,10 @@ export default function PortfolioPreview() {
 }
 
 /* ================= HELPERS ================= */
-
 function Section({ title, children, theme }) {
   return (
     <section className={`${theme.card} p-6 rounded-xl space-y-4`}>
-      <h2 className="text-xl">{title}</h2>
+      <h2 className="text-xl font-semibold">{title}</h2>
       {children}
     </section>
   );
@@ -264,12 +331,14 @@ function Card({ children, theme }) {
   return <div className={`${theme.card} p-4 rounded-lg space-y-2`}>{children}</div>;
 }
 
-function AddSkillInput({ addSkill, theme }) {
+function AddSkillInput({ addSkill }) {
   const [skill, setSkill] = useState("");
   return (
     <div className="flex gap-2">
-      <input value={skill} onChange={(e) => setSkill(e.target.value)} className={theme.input} />
-      <button onClick={() => { addSkill(skill.trim()); setSkill(""); }} className={theme.button}>Add</button>
+      <input className={inputBase} value={skill} onChange={(e) => setSkill(e.target.value)} placeholder="Add skill" />
+      <button onClick={() => { addSkill(skill.trim()); setSkill(""); }} className="bg-indigo-600 px-4 rounded-lg">
+        Add
+      </button>
     </div>
   );
 }
