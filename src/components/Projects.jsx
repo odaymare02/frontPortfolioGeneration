@@ -1,24 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Plus, Trash2, Image } from "lucide-react";
 import usePortfolio from "../hooks/usePortfolio";
 import Loading from "./Loading";
-import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
 
-export default function Projects({ data }) {
-  const navigate=useNavigate();
+export default function Projects() {
   const {
+    portfolio,
     updatePortfolio,
     uploadProjectImage,
-    portfolio
+    loading,
   } = usePortfolio({ Uname: localStorage.getItem("pun") });
 
-  const [projects, setProjects] = useState([]);
-  const [uploadingId, setUploadingId] = useState(null);
-
-  useEffect(() => {
-    setProjects(data.projects || []);
-  }, [data.projects]);
+  const projects = portfolio?.projects || [];
 
   const [newProject, setNewProject] = useState({
     name: "",
@@ -26,51 +19,59 @@ export default function Projects({ data }) {
     link: "",
   });
 
-const addProject = async () => {
-  if (!newProject.name.trim()) return;
+  const [uploadingId, setUploadingId] = useState(null);
 
-  const res = await api.post(
-    `/portfolios/${portfolio._id}/add-project`,
-    {
-      name: newProject.name,
-      description: newProject.description,
-    }
-  );
+  const addProject = async () => {
+    if (!newProject.name.trim()) return;
 
-  setProjects(prev => [...prev, res.data]);
-  setNewProject({ name: "", description: "", link: "" });
-};
+    await updatePortfolio({
+      projects: [
+        ...projects,
+        {
+          name: newProject.name,
+          description: newProject.description,
+          link: newProject.link,
+        },
+      ],
+    });
+
+    setNewProject({ name: "", description: "", link: "" });
+  };
 
   const removeProject = async (index) => {
     const updated = projects.filter((_, i) => i !== index);
-    setProjects(updated);
     await updatePortfolio({ projects: updated });
   };
 
   const updateField = async (index, key, value) => {
     const updated = [...projects];
-    updated[index][key] = value;
-    setProjects(updated);
+    updated[index] = { ...updated[index], [key]: value };
     await updatePortfolio({ projects: updated });
   };
 
   const uploadImage = async (projectId, file) => {
     if (!file) return;
     setUploadingId(projectId);
-    const res = await uploadProjectImage(projectId, file);
-    setProjects(res.projects);
-    setUploadingId(null);
+
+    try {
+      await uploadProjectImage(projectId, file);
+      // portfolio will auto-update
+    } finally {
+      setUploadingId(null);
+    }
   };
+
+  if (loading&&uploadingId===null) return <Loading />;
 
   return (
     <section className="bg-slate-900/70 p-6 rounded-2xl space-y-6 border border-white/10">
       <h2 className="text-xl font-semibold text-white">Projects</h2>
 
       <div className="space-y-4">
-        {projects.map((project, i) => (
+        {projects.map((project) => (
           <div
-            key={project._id || i}
-            className="p-4 rounded-xl bg-slate-800/60 space-y-3 relative"
+            key={project._id}
+            className="p-4 rounded-xl bg-slate-800/60 space-y-3"
           >
             <div className="relative w-full h-60 rounded-lg overflow-hidden">
               {uploadingId === project._id && (
@@ -94,14 +95,22 @@ const addProject = async () => {
 
             <input
               value={project.name}
-              onChange={(e) => updateField(i, "name", e.target.value)}
+              onChange={(e) =>
+                updateField(projects.indexOf(project), "name", e.target.value)
+              }
               className="input"
               placeholder="Project name"
             />
 
             <textarea
               value={project.description}
-              onChange={(e) => updateField(i, "description", e.target.value)}
+              onChange={(e) =>
+                updateField(
+                  projects.indexOf(project),
+                  "description",
+                  e.target.value
+                )
+              }
               rows={3}
               className="input"
               placeholder="Description"
@@ -109,7 +118,9 @@ const addProject = async () => {
 
             <input
               value={project.link}
-              onChange={(e) => updateField(i, "link", e.target.value)}
+              onChange={(e) =>
+                updateField(projects.indexOf(project), "link", e.target.value)
+              }
               className="input"
               placeholder="Project link"
             />
@@ -129,7 +140,9 @@ const addProject = async () => {
               </label>
 
               <button
-                onClick={() => removeProject(i)}
+                onClick={() =>
+                  removeProject(projects.indexOf(project))
+                }
                 className="text-red-400"
               >
                 <Trash2 size={16} />
@@ -152,7 +165,10 @@ const addProject = async () => {
         <textarea
           value={newProject.description}
           onChange={(e) =>
-            setNewProject({ ...newProject, description: e.target.value })
+            setNewProject({
+              ...newProject,
+              description: e.target.value,
+            })
           }
           rows={2}
           className="input"
