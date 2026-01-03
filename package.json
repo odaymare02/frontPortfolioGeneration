@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-    "homepage": "https://portfoliogenerate.onrender.com",
+  "homepage": "https://portfoliogenerate.onrender.com",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -18,6 +18,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.11.0",
+    "sweetalert2": "^11.26.17",
+    "sweetalert2-react-content": "^5.1.1",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

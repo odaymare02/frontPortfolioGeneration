@@ -2,10 +2,8 @@ import { useRef, } from "react";
 import AuthCard from "../reusable/AuthCard";
 import useAuth from "../hooks/useAuth";
 export default function Login() {
-    // const [username,setusername]=useState("");
     const usernameRef=useRef();
     const passwordRef=useRef();
-    // const[password,setPassword]=useState("");
     const{authRequest,loading,error}=useAuth();
     const handleLogin=async(e)=>{
         
@@ -32,8 +30,6 @@ export default function Login() {
         type="text"
         placeholder="username"
         className="w-full rounded-lg bg-slate-800/70 px-3 py-2 text-white"
-        // value={username}
-        // onChange={e=>setusername(e.target.value)}
         ref={usernameRef}
         />
 
@@ -41,8 +37,6 @@ export default function Login() {
         type="password"
         placeholder="Password"
         className="w-full rounded-lg bg-slate-800/70 px-3 py-2 text-white"
-        // value={password}
-        // onChange={e=>setPassword(e.target.value)}
         ref={passwordRef}
       />
             {error && <p className="text-red-400 text-sm text-center">{error}</p>}

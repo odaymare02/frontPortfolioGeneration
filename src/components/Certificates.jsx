@@ -13,12 +13,10 @@ export default function Certificates({ data }) {
   const fileRef = useRef(null);
   const activeCertId = useRef(null);
 
-  // sync from parent
   useEffect(() => {
     setCerts(data?.certificates || []);
   }, [data?.certificates]);
 
-  // add certificate (optimistic)
   const addCert = async () => {
     const updated = [
       ...certs,

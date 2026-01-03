@@ -5,11 +5,9 @@ import usePortfolio from "../hooks/usePortfolio";
 export default function Skills({ data }) {
   const { loading, updatePortfolio } = usePortfolio({ Uname: localStorage.getItem('pun') });
 
-  // 1️⃣ local state للـ skills
   const [skills, setSkills] = useState(data.skills || []);
   const [newSkill, setNewSkill] = useState("");
 
-  // 2️⃣ تحديث local state لو تغيرت data.skills من parent
   useEffect(() => {
     setSkills(data.skills || []);
   }, [data.skills]);
@@ -18,14 +16,11 @@ export default function Skills({ data }) {
     const skill = newSkill.trim();
     if (!skill || skills.includes(skill)) return;
 
-    // 3️⃣ تحديث محلي فورًا
     const updatedSkills = [...skills, skill];
     setSkills(updatedSkills);
     setNewSkill("");
 
-    // 4️⃣ حفظ في backend
     updatePortfolio({ skills: updatedSkills }).catch(() => {
-      // rollback لو صار error
       setSkills(skills);
     });
   };
@@ -35,7 +30,6 @@ export default function Skills({ data }) {
     setSkills(updatedSkills);
 
     updatePortfolio({ skills: updatedSkills }).catch(() => {
-      // rollback لو صار error
       setSkills(skills);
     });
   };

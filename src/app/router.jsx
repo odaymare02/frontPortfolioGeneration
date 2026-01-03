@@ -6,7 +6,8 @@ import PublicRouter from "../Protected/PublicRouter";
 import ProtectedRouter from "../Protected/ProtectedRouter";
 import Dashboard from "../pages/Dashboard";
 import PublicPortfolio from "../pages/PublicPortfolio";
-import PortfolioPreview from "./PreviewPage";
+import PortfolioPreview from "./../pages/PreviewPage";
+import NotFound from "../pages/NotFound";
 
 export const router=createBrowserRouter([
     {
@@ -30,4 +31,5 @@ export const router=createBrowserRouter([
         ]
     },
     {path:'/portfolios/:username',element:<PublicPortfolio/>},
+    {path:'*',element:<NotFound/>},
 ])

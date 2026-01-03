@@ -15,7 +15,6 @@ export default function About({ data }) {
 
   const [isDirty, setIsDirty] = useState(false);
 
-  // fill form when data changes
   useEffect(() => {
     if (data) {
       setForm({
@@ -27,19 +26,16 @@ export default function About({ data }) {
     }
   }, [data]);
 
-  // local change only
   const handleChange = (key, value) => {
     setForm(prev => ({ ...prev, [key]: value }));
     setIsDirty(true);
   };
 
-  // save changes
   const handleSave = async () => {
     await updatePortfolio(form);
     setIsDirty(false);
   };
 
-  // cancel changes
   const handleCancel = () => {
     setForm({
       name: data.name || "",
@@ -49,7 +45,6 @@ export default function About({ data }) {
     setIsDirty(false);
   };
 
-  // profile image upload (auto)
   const handleImageClick = () => fileRef.current.click();
 
   const handleImageUpload = async (e) => {
@@ -82,7 +77,7 @@ export default function About({ data }) {
             onClick={handleImageClick}
             className="text-indigo-400 text-sm hover:underline"
           >
-            Change photo
+            { loading? "changing...":"Change photo"}
           </button>
 
           <input

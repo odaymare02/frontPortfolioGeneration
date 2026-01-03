@@ -10,7 +10,6 @@ export default function ThemeSelector() {
   const [selected, setSelected] = useState("classic");
   const [loading, setLoading] = useState(false);
 
-  // fetch themes from backend once
   useEffect(() => {
     const fetchThemes = async () => {
       try {
@@ -23,25 +22,22 @@ export default function ThemeSelector() {
     fetchThemes();
   }, []);
 
-  // sync selected with portfolio.theme
   useEffect(() => {
     if (portfolio?.theme) {
       setSelected(portfolio.theme);
     }
   }, [portfolio?.theme]);
 
-  // handle theme change
   const handleChange = async (e) => {
     const newTheme = e.target.value;
     setSelected(newTheme);
     setLoading(true);
 
     try {
-      await updateTheme(newTheme);  // update backend
-      await fetchPortfolio();       // fetch updated portfolio
+      await updateTheme(newTheme);  
+      await fetchPortfolio();       
     } catch (err) {
       console.error(err);
-      // rollback if failed
       setSelected(portfolio?.theme || "classic");
     } finally {
       setLoading(false);

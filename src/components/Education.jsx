@@ -10,8 +10,14 @@ export default function Education({ data }) {
   const [education, setEducation] = useState([]);
 
   useEffect(() => {
-    setEducation(data.education || []);
-  }, [data.education]);
+    if (data?.education) {
+      setEducation(data.education);
+    }
+  }, [data]);
+
+  const syncBackend = async (updated) => {
+    await updatePortfolio({ education: updated });
+  };
 
   const addEducation = async () => {
     const updated = [
@@ -25,20 +31,23 @@ export default function Education({ data }) {
       },
     ];
     setEducation(updated);
-    await updatePortfolio({ education: updated });
+    await syncBackend(updated);
   };
 
-  const updateField = async (i, key, value) => {
+  const updateLocal = (i, key, value) => {
     const updated = [...education];
     updated[i][key] = value;
     setEducation(updated);
-    await updatePortfolio({ education: updated });
+  };
+
+  const saveField = async () => {
+    await syncBackend(education);
   };
 
   const removeItem = async (i) => {
     const updated = education.filter((_, idx) => idx !== i);
     setEducation(updated);
-    await updatePortfolio({ education: updated });
+    await syncBackend(updated);
   };
 
   return (
@@ -46,31 +55,57 @@ export default function Education({ data }) {
       <h2 className="title">Education</h2>
 
       {education.map((ed, i) => (
-        <div key={i} className="card">
+        <div key={i} className="card space-y-2">
           <input
             className="input"
-            placeholder="Institution"
-            value={ed.institution}
+            placeholder="Institution Name"
+            value={ed.institution || ""}
             onChange={(e) =>
-              updateField(i, "institution", e.target.value)
+              updateLocal(i, "institution", e.target.value)
             }
+            onBlur={saveField}
           />
+
           <input
             className="input"
-            placeholder="Degree"
-            value={ed.degree}
+            placeholder="Degree / Field of Study"
+            value={ed.degree || ""}
             onChange={(e) =>
-              updateField(i, "degree", e.target.value)
+              updateLocal(i, "degree", e.target.value)
             }
+            onBlur={saveField}
           />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <input
+              type="date"
+              className="input"
+              value={ed.startDate ? ed.startDate.slice(0, 10) : ""}
+              onChange={(e) =>
+                updateLocal(i, "startDate", e.target.value)
+              }
+              onBlur={saveField}
+            />
+
+            <input
+              type="date"
+              className="input"
+              value={ed.endDate ? ed.endDate.slice(0, 10) : ""}
+              onChange={(e) =>
+                updateLocal(i, "endDate", e.target.value)
+              }
+              onBlur={saveField}
+            />
+          </div>
 
           <textarea
             className="input"
-            placeholder="Description"
-            value={ed.description}
+            placeholder="Description (optional)"
+            value={ed.description || ""}
             onChange={(e) =>
-              updateField(i, "description", e.target.value)
+              updateLocal(i, "description", e.target.value)
             }
+            onBlur={saveField}
           />
 
           <button

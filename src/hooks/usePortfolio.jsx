@@ -8,18 +8,14 @@ export default function usePortfolio({ Uname }) {
   const [error, setError] = useState(null);
   const decode=jwtDecode(localStorage.getItem('ptoken'));
 
-  // fetch portfolio by username
   const fetchPortfolio = async () => {
   setLoading(true);
   setError(null);
   try {
-    console.log("objectasdasdasdasdsasddasd")
     const res = await api.get(`/portfolios/${Uname}`);
     setPortfolio(res.data);
-    console.log(portfolio);
   } catch (err) {
     if (err.response?.status === 404) {
-      // إذا ما فيه portfolio أنشئ واحد فارغ
       const emptyPortfolio = await createPortfolio({
         userId:decode.id,
         username: Uname,
@@ -37,7 +33,6 @@ export default function usePortfolio({ Uname }) {
       });
       setPortfolio(emptyPortfolio);
     } else {
-      // أي error ثاني
       setError(err.response?.data?.message || err.message);
     }
   } finally {
@@ -47,10 +42,8 @@ export default function usePortfolio({ Uname }) {
 
   useEffect(() => {
     if (Uname) fetchPortfolio();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Uname]);
 
-  // update portfolio
   const updatePortfolio = async (data) => {
     setLoading(true);
     setError(null);
@@ -66,7 +59,6 @@ export default function usePortfolio({ Uname }) {
     }
   };
 
-  // delete portfolio
   const deletePortfolio = async () => {
     setLoading(true);
     setError(null);
@@ -80,8 +72,6 @@ export default function usePortfolio({ Uname }) {
       setLoading(false);
     }
   };
-
-  // upload profile image
   const uploadProfileImage = async (file) => {
     setLoading(true);
     setError(null);
@@ -101,7 +91,6 @@ export default function usePortfolio({ Uname }) {
     }
   };
 
-  // upload project image
   const uploadProjectImage = async (projectId, file) => {
     setLoading(true);
     setError(null);
@@ -139,7 +128,6 @@ export default function usePortfolio({ Uname }) {
         }
       );
 
-      // تحديث فوري للـ portfolio
       setPortfolio(res.data);
       return res.data;
 
@@ -152,7 +140,6 @@ export default function usePortfolio({ Uname }) {
   };
 
 
-  // update theme
   const updateTheme = async (theme) => {
     setLoading(true);
     setError(null);

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axios"; // axios instance
+import NotFound from "./NotFound";
+import Loading from "../components/Loading";
 
 export default function PublicPortfolio() {
   const { username } = useParams();
@@ -13,10 +15,9 @@ export default function PublicPortfolio() {
       .finally(() => setLoading(false));
   }, [username]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!portfolio) return <p>Portfolio not found</p>;
+  if (loading) return <Loading/>;
+  if (!portfolio) return <NotFound user={username}/>;
 
-  // ---------- Advanced Themes ----------
   const themes = {
     classic: {
       container: "bg-slate-900 text-white",

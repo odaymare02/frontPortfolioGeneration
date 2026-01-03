@@ -9,6 +9,11 @@ import Education from "../components/Education";
 import Certificates from "../components/Certificates";
 import Links from "../components/Links";
 import ThemeSelector from "../components/ThemeSelector";
+import Loading from "../components/Loading";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 const TABS = [
   { name: "About", component: About },
@@ -17,9 +22,8 @@ const TABS = [
   { name: "Experience", component: Experience },
   { name: "Education", component: Education },
   { name: "Certificates", component: Certificates },
-  { name: "Links", component: Links },
+  // { name: "Links", component: Links },
   { name: "Themes", component: ThemeSelector },
-  // Preview handled separately
 ];
 
 export default function Dashboard() {
@@ -29,7 +33,7 @@ export default function Dashboard() {
   });
   const navigate = useNavigate();
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p><Loading/></p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   const ActiveComponent = TABS.find((tab) => tab.name === activeTab)?.component;
@@ -43,7 +47,12 @@ export default function Dashboard() {
   const handleGetPublicLink = () => {
     const publicLink = `${window.location.origin}/portfolios/${localStorage.getItem("pun")}`;
     navigator.clipboard.writeText(publicLink);
-    alert("Public link copied to clipboard!");
+     MySwal.fire({
+      icon: 'success',
+      title: 'Public link copied to clipboard!',
+      showConfirmButton: false,
+      timer: 1500
+    });
   };
 
   return (
