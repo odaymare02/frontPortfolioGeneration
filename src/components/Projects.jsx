@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Image } from "lucide-react";
 import usePortfolio from "../hooks/usePortfolio";
 import Loading from "./Loading";
+import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Projects({ data }) {
+  const navigate=useNavigate();
   const {
     updatePortfolio,
     uploadProjectImage,
+    portfolio
   } = usePortfolio({ Uname: localStorage.getItem("pun") });
 
   const [projects, setProjects] = useState([]);
@@ -22,13 +26,20 @@ export default function Projects({ data }) {
     link: "",
   });
 
-  const addProject = async () => {
-    if (!newProject.name.trim()) return;
-    const updated = [...projects, newProject];
-    setProjects(updated);
-    setNewProject({ name: "", description: "", link: "" });
-    await updatePortfolio({ projects: updated });
-  };
+const addProject = async () => {
+  if (!newProject.name.trim()) return;
+
+  const res = await api.post(
+    `/portfolios/${portfolio._id}/add-project`,
+    {
+      name: newProject.name,
+      description: newProject.description,
+    }
+  );
+
+  setProjects(prev => [...prev, res.data]);
+  setNewProject({ name: "", description: "", link: "" });
+};
 
   const removeProject = async (index) => {
     const updated = projects.filter((_, i) => i !== index);
